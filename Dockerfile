@@ -15,11 +15,18 @@ WORKDIR /app
 
 COPY backend/ ./backend/
 
-RUN pip install --no-cache-dir flask gunicorn
+RUN pip install --no-cache-dir flask flask-cors gunicorn
 
 # Copia frontend buildado
 COPY --from=frontend-build /app/frontend/dist /app/backend/dist
 
 WORKDIR /app/backend
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5001", "run:app"]  
+ENV FLASK_HOST=0.0.0.0
+ENV FLASK_PORT=5001
+
+# Healthcheck
+RUN apt-get update && apt-get install -y curl
+HEALTHCHECK CMD curl --fail http://localhost:5001/health || exit 1
+
+CMD ["gunicorn", "-w", "2", "--threads", "4", "--timeout", "120", "-b", "0.0.0.0:5001", "run:create_app()"]
