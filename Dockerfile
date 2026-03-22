@@ -15,7 +15,7 @@ WORKDIR /app
 
 COPY backend/ ./backend/
 
-RUN pip install --no-cache-dir flask flask-cors gunicorn python-dotenv openai
+RUN pip install --no-cache-dir flask flask-cors gunicorn python-dotenv openai zep-cloud
 
 # Copia frontend buildado
 COPY --from=frontend-build /app/frontend/dist /app/backend/dist
