@@ -72,16 +72,20 @@ def create_app(config_class=Config):
         return {'status': 'ok', 'service': 'MiroFish Backend'}
 
     # ===== SERVIR FRONTEND (CORREÇÃO DO 404) =====
-    @app.route('/')
-    def serve_frontend():
-        return send_from_directory('dist', 'index.html')
+   frontend_dir = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', 'dist')
+)
 
-    @app.route('/<path:path>')
-    def serve_static(path):
-        try:
-            return send_from_directory('dist', path)
-        except:
-            return send_from_directory('dist', 'index.html')
+@app.route('/')
+def serve_frontend():
+    return send_from_directory(frontend_dir, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    try:
+        return send_from_directory(frontend_dir, path)
+    except Exception:
+        return send_from_directory(frontend_dir, 'index.html')
     
     if should_log_startup:
         logger.info("MiroFish Backend 启动完成")
