@@ -50,19 +50,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Verifica se o backend está respondendo
-HEALTHCHECK \
-    --interval=30s \
-    --timeout=10s \
-    --start-period=20s \
-    --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
     CMD curl --fail http://localhost:5001/health || exit 1
 
 # Inicializa o MiroFish
-CMD [
-    "gunicorn",
-    "-w", "2",
-    "--threads", "4",
-    "--timeout", "120",
-    "-b", "0.0.0.0:5001",
-    "run:create_app()"
-]
+CMD ["gunicorn", "-w", "2", "--threads", "4", "--timeout", "120", "-b", "0.0.0.0:5001", "run:create_app()"]
